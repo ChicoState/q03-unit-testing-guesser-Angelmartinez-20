@@ -1,6 +1,5 @@
 #include "Guesser.h"
 #include <string>
-
 using std::string;
 
 /*
@@ -15,7 +14,29 @@ using std::string;
   has 100, the distance is 10.
 */
 unsigned int Guesser::distance(string guess){
-  return 0;
+  unsigned int dist = 0;
+  string longest, shortest;
+
+  /* init longest and shortest string */
+  if (guess.length() > m_secret.length()) {
+    longest = guess;
+    shortest = m_secret;
+  } else {
+    longest = m_secret; 
+    shortest = guess;    
+  }
+
+  /* counts each mismatched characters */
+  for (int i = 0; i < shortest[i]; i++) {
+    if (shortest[i] != longest[i]) dist++;
+  }
+
+  /* adds lenght diffrence between strings */
+  dist += (longest.length() - shortest.length());
+
+  /* returns distance */
+  if (dist < m_secret.length()) return dist;
+  else return m_secret.length();
 }
 
 /*
@@ -25,7 +46,7 @@ unsigned int Guesser::distance(string guess){
   otherwise, it will be truncated at that length.
 */
 Guesser::Guesser(string secret){
-
+  m_secret = secret.substr(0, 32);
 }
 
 /*
@@ -40,7 +61,24 @@ Guesser::Guesser(string secret){
   and the secret.
 */
 bool Guesser::match(string guess){
-  return true;
+  if (m_locked) return false;
+
+  /* resets attempts if correct match */
+  if (guess == m_secret) {
+    m_remaining = 3;
+    return true;
+  }
+  m_remaining--;  // unsucceful attampt
+
+  /* locks if dist from secret > than 2*/
+  if (distance(guess) > 2) {
+    m_locked = true;
+    return false;
+  }
+  /* lcoks if no more remaining */
+  if(m_remaining == 0) m_locked = true;
+
+  return false;
 }
 
 /*
@@ -51,6 +89,6 @@ bool Guesser::match(string guess){
   reset to three (3).
 */
 unsigned int Guesser::remaining(){
-  return 0;
+  return m_remaining;
 }
 

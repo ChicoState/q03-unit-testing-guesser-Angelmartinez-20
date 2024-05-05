@@ -9,7 +9,8 @@ class Guesser
 {
 private:
   string m_secret;
-  unsigned int m_remaining;
+  bool m_locked = false;
+  unsigned int m_remaining = 3;
 
   /*
     Returns an whole number representing the distance between the guess,
